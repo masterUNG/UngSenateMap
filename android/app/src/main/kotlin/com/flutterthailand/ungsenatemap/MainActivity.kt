@@ -1,0 +1,6 @@
+package com.flutterthailand.ungsenatemap
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
