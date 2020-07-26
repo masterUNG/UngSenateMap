@@ -43,5 +43,9 @@
 	<false/>
     <key>io.flutter.embedded_views_preview</key>
     <true/>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Requeres to Your Location for Find Lat Lng</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Requeres to Your Location for Find Lat Lng</string>
 </dict>
 </plist>
