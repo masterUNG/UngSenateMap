@@ -10,18 +10,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   double lat, lng;
   LatLng startLatLng;
+  Set<Polygon> currentPolygon = Set();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     findLatLng();
+    currentPolygon = senatePolygon();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: buildDrawer(),
       appBar: AppBar(),
       body: lat == null
           ? Center(
@@ -29,6 +31,198 @@ class _HomeState extends State<Home> {
             )
           : buildGoogleMap(),
     );
+  }
+
+  Drawer buildDrawer() => Drawer(
+        child: Column(
+          children: <Widget>[
+            buildUserAccountsDrawerHeader(),
+            buildListTileHome(),
+            buildListTileBuildA(),
+            buildListTileBuildB(),
+            buildListTileBuildC(),
+          ],
+        ),
+      );
+
+  ListTile buildListTileHome() => ListTile(
+        leading: Icon(
+          Icons.home,
+          size: 36,
+          color: Colors.yellow.shade600,
+        ),
+        title: Text('สัปปายะสภาสถาน'),
+        subtitle: Text(
+            'เป็นอาคารรัฐสภาที่จะใช้แทนอาคารเดิมบริเวณข้างสวนสัตว์ดุสิต ตั้งอยู่ริมแม่น้ำเจ้าพระยา'),
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentPolygon = senatePolygon();
+          });
+        },
+      );
+
+  ListTile buildListTileBuildA() => ListTile(
+        leading: Icon(
+          Icons.looks_one,
+          size: 36,
+          color: Colors.blue.shade700,
+        ),
+        title: Text('Build A'),
+        subtitle: Text('Detail Build A'),
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentPolygon = buildAPolygon();
+          });
+        },
+      );
+
+  ListTile buildListTileBuildB() => ListTile(
+        leading: Icon(
+          Icons.looks_two,
+          size: 36,
+          color: Colors.green.shade700,
+        ),
+        title: Text('Build B'),
+        subtitle: Text('Detail Build B'),
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentPolygon = buildBPolygon();
+          });
+        },
+      );
+
+  ListTile buildListTileBuildC() => ListTile(
+        leading: Icon(
+          Icons.looks_3,
+          size: 36,
+          color: Colors.orange.shade600,
+        ),
+        title: Text('Build A and B'),
+        subtitle: Text('Build A and B Detail'),
+        onTap: () {
+          Navigator.pop(context);
+          setState(() {
+            currentPolygon = buildCPolygon();
+          });
+        },
+      );
+
+  UserAccountsDrawerHeader buildUserAccountsDrawerHeader() {
+    return UserAccountsDrawerHeader(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('images/senate1.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      accountName: null,
+      accountEmail: null,
+    );
+  }
+
+  Set<Polygon> senatePolygon() {
+    List<LatLng> latLngs = List();
+    latLngs.add(LatLng(13.797241, 100.521201));
+    latLngs.add(LatLng(13.798588, 100.517215));
+    latLngs.add(LatLng(13.795873, 100.515846));
+    latLngs.add(LatLng(13.794545, 100.515092));
+    latLngs.add(LatLng(13.793313, 100.517796));
+    latLngs.add(LatLng(13.794305, 100.518561));
+
+    Set<Polygon> polygonSet = Set();
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('senateId'),
+        points: latLngs,
+        fillColor: Color.fromARGB(30, 255, 255, 0),
+        strokeColor: Color.fromARGB(255, 204, 204, 0),
+        strokeWidth: 5,
+      ),
+    );
+
+    return polygonSet;
+  }
+
+  Set<Polygon> buildAPolygon() {
+    List<LatLng> latLngs = List();
+
+    latLngs.add(LatLng(13.797396, 100.518795));
+    latLngs.add(LatLng(13.796364, 100.518355));
+    latLngs.add(LatLng(13.796988, 100.517200));
+    latLngs.add(LatLng(13.797925, 100.517772));
+
+    Set<Polygon> polygonSet = Set();
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('senateId'),
+        points: latLngs,
+        fillColor: Color.fromARGB(30, 0, 128, 255),
+        strokeColor: Color.fromARGB(255, 0, 76, 153),
+        strokeWidth: 3,
+      ),
+    );
+    return polygonSet;
+  }
+
+  Set<Polygon> buildBPolygon() {
+    List<LatLng> latLngs = List();
+
+    latLngs.add(LatLng(13.796817, 100.517078));
+    latLngs.add(LatLng(13.796239, 100.518366));
+    latLngs.add(LatLng(13.795062, 100.517701));
+    latLngs.add(LatLng(13.795656, 100.516327));
+
+    Set<Polygon> polygonSet = Set();
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('senateId'),
+        points: latLngs,
+        fillColor: Color.fromARGB(30, 0, 204, 0),
+        strokeColor: Color.fromARGB(255, 0, 153, 0),
+        strokeWidth: 3,
+      ),
+    );
+    return polygonSet;
+  }
+
+  Set<Polygon> buildCPolygon() {
+    List<LatLng> latLngs = List();
+    latLngs.add(LatLng(13.797396, 100.518795));
+    latLngs.add(LatLng(13.796364, 100.518355));
+    latLngs.add(LatLng(13.796988, 100.517200));
+    latLngs.add(LatLng(13.797925, 100.517772));
+
+    List<LatLng> latLngs1 = List();
+    latLngs1.add(LatLng(13.796817, 100.517078));
+    latLngs1.add(LatLng(13.796239, 100.518366));
+    latLngs1.add(LatLng(13.795062, 100.517701));
+    latLngs1.add(LatLng(13.795656, 100.516327));
+
+    Set<Polygon> polygonSet = Set();
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('senateId0'),
+        points: latLngs,
+        fillColor: Color.fromARGB(30, 0, 204, 0),
+        strokeColor: Color.fromARGB(255, 0, 153, 0),
+        strokeWidth: 3,
+      ),
+    );
+
+    polygonSet.add(
+      Polygon(
+        polygonId: PolygonId('senateId1'),
+        points: latLngs1,
+        fillColor: Color.fromARGB(30, 0, 128, 255),
+        strokeColor: Color.fromARGB(255, 0, 76, 153),
+        strokeWidth: 3,
+      ),
+    );
+
+    return polygonSet;
   }
 
   GoogleMap buildGoogleMap() {
@@ -40,10 +234,12 @@ class _HomeState extends State<Home> {
     return GoogleMap(
       initialCameraPosition: position,
       onMapCreated: (controller) {},
+      polygons: currentPolygon,
       markers: <Marker>[
         Marker(
           markerId: MarkerId('idUser'),
           position: startLatLng,
+          infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่'),
         ),
       ].toSet(),
     );
