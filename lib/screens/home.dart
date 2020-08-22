@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:ungsenatemap/screens/main_hold.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,6 +12,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   double lat, lng;
+  double latUser, lngUser;
+  Location location = Location();
   LatLng startLatLng;
   Set<Polygon> currentPolygon = Set();
 
@@ -16,7 +21,30 @@ class _HomeState extends State<Home> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    findLatLng();
+
+    if (Platform.isIOS) {
+      findLatLng();
+    } else if (Platform.isAndroid) {
+      location.onLocationChanged.listen((event) {
+        if (lat == null) {
+          latUser = event.latitude;
+          lngUser = event.longitude;
+          print('lat,lngUser #1 ==> $latUser, $lngUser');
+          setState(() {
+            lat = latUser;
+            lng = lngUser;
+          });
+        } else {
+          setState(() {
+            latUser = event.latitude;
+            lngUser = event.longitude;
+            print('lat,lngUser #2 ==> $latUser, $lngUser');
+          });
+        }
+      });
+    }
+
+    // findLatLng();
     currentPolygon = senatePolygon();
   }
 
@@ -41,7 +69,26 @@ class _HomeState extends State<Home> {
             buildListTileBuildA(),
             buildListTileBuildB(),
             buildListTileBuildC(),
+            buildListTileMainHold(),
           ],
+        ),
+      );
+
+  ListTile buildListTileMainHold() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainHold(),
+              ));
+        },
+        subtitle: Text('ประวัติความเป็นมา, ตราสัญลักษณ์, อาคารในรัฐสภา'),
+        title: Text('แนะนำ รัฐสภา'),
+        leading: Icon(
+          Icons.list,
+          size: 36,
+          color: Colors.purple,
         ),
       );
 
@@ -227,7 +274,7 @@ class _HomeState extends State<Home> {
 
   GoogleMap buildGoogleMap() {
     CameraPosition position = CameraPosition(
-      target: startLatLng,
+      target: LatLng(lat, lng),
       zoom: 16,
     );
 
@@ -238,7 +285,7 @@ class _HomeState extends State<Home> {
       markers: <Marker>[
         Marker(
           markerId: MarkerId('idUser'),
-          position: startLatLng,
+          position: LatLng(latUser, lngUser),
           infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่'),
         ),
       ].toSet(),
@@ -251,8 +298,10 @@ class _HomeState extends State<Home> {
       setState(() {
         lat = data.latitude;
         lng = data.longitude;
+        latUser = lat;
+        lngUser = lng;
         print('lat = $lat, lng = $lng');
-        startLatLng = LatLng(lat, lng);
+        // startLatLng = LatLng(lat, lng);
       });
     }
   }
