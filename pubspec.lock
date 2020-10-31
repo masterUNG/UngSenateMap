@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.3"
+  dio:
+    dependency: transitive
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.10"
   fake_async:
     dependency: transitive
     description:
@@ -118,6 +125,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.7"
+  flutter_polyline_points:
+    dependency: "direct main"
+    description:
+      name: flutter_polyline_points
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.4"
   flutter_svg:
     dependency: transitive
     description:
@@ -135,6 +149,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  google_map_polyline:
+    dependency: "direct main"
+    description:
+      name: google_map_polyline
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+1"
   google_maps_flutter:
     dependency: "direct main"
     description:

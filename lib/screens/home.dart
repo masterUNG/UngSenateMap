@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:ungsenatemap/screens/main_hold.dart';
@@ -16,13 +17,17 @@ class _HomeState extends State<Home> {
   Location location = Location();
   LatLng startLatLng;
   Set<Polygon> currentPolygon = Set();
+  double latSenate = 13.794939, lngSenate = 100.516888;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    _createPolylines();
+
     if (Platform.isIOS) {
+      print('############ Welcome iOS ############');
       findLatLng();
     } else if (Platform.isAndroid) {
       location.onLocationChanged.listen((event) {
@@ -272,9 +277,60 @@ class _HomeState extends State<Home> {
     return polygonSet;
   }
 
+  PolylinePoints polylinePoints = PolylinePoints();
+  List<LatLng> polylineCoordinates = [];
+  Map<PolylineId, Polyline> polylines = {};
+
+  Future<Null> _createPolylines() async {
+    print('_createPolylinees Work');
+
+    await PolylinePoints()
+        .getRouteBetweenCoordinates(
+          'AIzaSyC_9exOcrKygbyMKKf47-DvzAa3vhM_VFc',
+          PointLatLng(13.794305, 100.518561),
+          PointLatLng(13.796817, 100.517078),
+          travelMode: TravelMode.transit,
+        )
+        .then((value) =>
+            print('############### Success ===>>> ${value.status.toString()}'))
+        .catchError((value) {
+      print('#########  error   ####### ==>> ${value.toString()}');
+    });
+
+    // if (result.points.isNotEmpty) {
+    //   print('result not Empty');
+    //   // result.points.forEach((element) {
+    //   //   polylineCoordinates.add(LatLng(element.latitude, element.longitude));
+    //   // });
+
+    //   for (var item in result.points) {
+    //     polylineCoordinates.add(LatLng(item.latitude, item.longitude));
+    //   }
+    // } else {
+    //   print(
+    //       '################## result is Empty ========>>>> ${result.points.toString()} ###############');
+    //   polylineCoordinates.add(LatLng(13.797241, 100.521201));
+    //   polylineCoordinates.add(LatLng(13.794305, 100.518561));
+    //   polylineCoordinates.add(LatLng(13.795873, 100.515846));
+    //   polylineCoordinates.add(LatLng(13.793313, 100.517796));
+    // }
+
+    // PolylineId id = PolylineId('poly');
+
+    // Polyline polyline = Polyline(
+    //   polylineId: id,
+    //   color: Colors.purple,
+    //   points: polylineCoordinates,
+    //   width: 3,
+    // );
+
+    // polylines[id] = polyline;
+  }
+
   GoogleMap buildGoogleMap() {
     CameraPosition position = CameraPosition(
-      target: LatLng(lat, lng),
+      // target: LatLng(lat, lng),
+      target: LatLng(latSenate, lngSenate),
       zoom: 16,
     );
 
@@ -282,11 +338,17 @@ class _HomeState extends State<Home> {
       initialCameraPosition: position,
       onMapCreated: (controller) {},
       polygons: currentPolygon,
+      // polylines: Set<Polyline>.of(polylines.values),
       markers: <Marker>[
         Marker(
           markerId: MarkerId('idUser'),
           position: LatLng(latUser, lngUser),
           infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่'),
+        ),
+        Marker(
+          markerId: MarkerId('idSenate'),
+          position: LatLng(latSenate, lngSenate),
+          infoWindow: InfoWindow(title: 'สัปปายะสภาสถาน'),
         ),
       ].toSet(),
     );
