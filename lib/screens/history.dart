@@ -35,7 +35,7 @@ class _HistoryState extends State<History> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : PDFViewer(document: pdfDocument),
+          : PDFViewer(document: pdfDocument,showNavigation: false,),
     );
   }
 }

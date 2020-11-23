@@ -15,7 +15,11 @@ PODS:
     - GoogleMaps/Base
   - location (0.0.1):
     - Flutter
+  - "location_permissions (3.0.0+1)":
+    - Flutter
   - path_provider (0.0.1):
+    - Flutter
+  - "permission_handler (5.0.1+1)":
     - Flutter
   - sqflite (0.0.2):
     - Flutter
@@ -26,7 +30,9 @@ DEPENDENCIES:
   - flutter_plugin_pdf_viewer (from `.symlinks/plugins/flutter_plugin_pdf_viewer/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
@@ -43,8 +49,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
 
@@ -55,7 +65,9 @@ SPEC CHECKSUMS:
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleMaps: b7f7fc569a9b354a3af0d9729dbec40957b7d41e
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

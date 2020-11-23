@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:location_permissions/location_permissions.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ungsenatemap/screens/main_hold.dart';
+import 'package:ungsenatemap/utility/normal_dialog.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -24,8 +28,39 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
 
+    // checkPermission();
+
     _createPolylines();
 
+    choosePlatform();
+
+    // findLatLng();
+    currentPolygon = senatePolygon();
+
+    checkPermissLocation();
+  }
+
+  Future<Null> checkPermissLocation() async {
+    Duration duration = Duration(seconds: 20);
+    await Timer(duration, () async {
+      await Permission.location.status.then((value) async {
+        print('###### value ==>> ${value.toString()}');
+        if (value.isGranted) {
+          print('##### Persion Status Granted #######');
+        } else if (value.isRestricted) {
+          print('##### Persion Status Restricted #######');
+        } else {
+          print('##### Persion Status Non Granted #######');
+          normalDialog(context, 'Cannot Find Location App Auto Exit in 3 Sec');
+          await Timer(Duration(seconds: 3), () {
+            exit(0);
+          });
+        }
+      });
+    });
+  }
+
+  void choosePlatform() {
     if (Platform.isIOS) {
       print('############ Welcome iOS ############');
       findLatLng();
@@ -48,9 +83,20 @@ class _HomeState extends State<Home> {
         }
       });
     }
+  }
 
-    // findLatLng();
-    currentPolygon = senatePolygon();
+  Future<Null> checkPermission() async {
+    Duration duration = Duration(seconds: 10);
+    await Timer(duration, () async {
+      await LocationPermissions().checkPermissionStatus().then((value) {
+        print('++++++++++++ permission ===>>> ${value.toString()}');
+        // enum object = value;
+        // if (object == PermissionStatus.granted) {
+
+        // } else {
+        // }
+      });
+    });
   }
 
   @override
@@ -291,8 +337,10 @@ class _HomeState extends State<Home> {
           PointLatLng(13.796817, 100.517078),
           travelMode: TravelMode.transit,
         )
-        .then((value) =>
-            print('############### Success ===>>> ${value.status.toString()}'))
+        .then(
+          (value) => print(
+              '############### Success ===>>> ${value.status.toString()}'),
+        )
         .catchError((value) {
       print('#########  error   ####### ==>> ${value.toString()}');
     });
@@ -355,8 +403,10 @@ class _HomeState extends State<Home> {
   }
 
   Future<Null> findLatLng() async {
+    print('######## findLatLng Work ########');
     LocationData data = await findLocationData();
     if (data != null) {
+      print('######## Location Not null ########');
       setState(() {
         lat = data.latitude;
         lng = data.longitude;
