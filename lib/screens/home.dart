@@ -29,14 +29,10 @@ class _HomeState extends State<Home> {
     super.initState();
 
     // checkPermission();
-
     _createPolylines();
-
     choosePlatform();
-
     // findLatLng();
     currentPolygon = senatePolygon();
-
     checkPermissLocation();
   }
 
@@ -46,7 +42,7 @@ class _HomeState extends State<Home> {
       await Permission.location.status.then((value) async {
         print('###### value ==>> ${value.toString()}');
         if (value.isGranted) {
-          print('##### Persion Status Granted #######');
+          print('##### Persion Status Granted   #######');
         } else if (value.isRestricted) {
           print('##### Persion Status Restricted #######');
         } else {
