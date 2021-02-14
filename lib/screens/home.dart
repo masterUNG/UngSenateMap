@@ -6,9 +6,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:location_permissions/location_permissions.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:ungsenatemap/screens/main_hold.dart';
-import 'package:ungsenatemap/utility/normal_dialog.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -33,27 +31,7 @@ class _HomeState extends State<Home> {
     choosePlatform();
     // findLatLng();
     currentPolygon = senatePolygon();
-    checkPermissLocation();
-  }
-
-  Future<Null> checkPermissLocation() async {
-    Duration duration = Duration(seconds: 20);
-    await Timer(duration, () async {
-      await Permission.location.status.then((value) async {
-        print('###### value ==>> ${value.toString()}');
-        if (value.isGranted) {
-          print('##### Persion Status Granted   #######');
-        } else if (value.isRestricted) {
-          print('##### Persion Status Restricted #######');
-        } else {
-          print('##### Persion Status Non Granted #######');
-          normalDialog(context, 'Cannot Find Location App Auto Exit in 3 Sec');
-          await Timer(Duration(seconds: 3), () {
-            exit(0);
-          });
-        }
-      });
-    });
+    // checkPermissLocation();
   }
 
   void choosePlatform() {
@@ -392,7 +370,7 @@ class _HomeState extends State<Home> {
         Marker(
           markerId: MarkerId('idSenate'),
           position: LatLng(latSenate, lngSenate),
-          infoWindow: InfoWindow(title: 'สัปปายะสภาสถาน'),
+          infoWindow: InfoWindow(title: 'สัปปายะสภาสถาน',),
         ),
       ].toSet(),
     );
