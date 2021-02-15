@@ -31,13 +31,13 @@
 	<key>NSContactsUsageDescription</key>
 	<string>contacts</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Always and when in use!</string>
+	<string>Always and when in use! We ask for Location to guide or suggest the most convenient route to take you to us.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Can I have location always?</string>
+	<string>Can I have location always? We ask for Location to guide or suggest the most convenient route to take you to us.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>Older devices need location.</string>
+	<string>Older devices need location. We ask for Location to guide or suggest the most convenient route to take you to us.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Need location when in use</string>
+	<string>Need location when in use, We ask for Location to guide or suggest the most convenient route to take you to us.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>microphone</string>
 	<key>NSMotionUsageDescription</key>

@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:location_permissions/location_permissions.dart';
+
 import 'package:ungsenatemap/screens/main_hold.dart';
 
 class Home extends StatefulWidget {
@@ -57,20 +58,6 @@ class _HomeState extends State<Home> {
         }
       });
     }
-  }
-
-  Future<Null> checkPermission() async {
-    Duration duration = Duration(seconds: 10);
-    await Timer(duration, () async {
-      await LocationPermissions().checkPermissionStatus().then((value) {
-        print('++++++++++++ permission ===>>> ${value.toString()}');
-        // enum object = value;
-        // if (object == PermissionStatus.granted) {
-
-        // } else {
-        // }
-      });
-    });
   }
 
   @override
@@ -297,9 +284,9 @@ class _HomeState extends State<Home> {
     return polygonSet;
   }
 
-  PolylinePoints polylinePoints = PolylinePoints();
-  List<LatLng> polylineCoordinates = [];
-  Map<PolylineId, Polyline> polylines = {};
+  // // PolylinePoints polylinePoints = PolylinePoints();
+  // List<LatLng> polylineCoordinates = [];
+  // Map<PolylineId, Polyline> polylines = {};
 
   Future<Null> _createPolylines() async {
     print('_createPolylinees Work');
@@ -318,35 +305,29 @@ class _HomeState extends State<Home> {
         .catchError((value) {
       print('#########  error   ####### ==>> ${value.toString()}');
     });
+  }
 
-    // if (result.points.isNotEmpty) {
-    //   print('result not Empty');
-    //   // result.points.forEach((element) {
-    //   //   polylineCoordinates.add(LatLng(element.latitude, element.longitude));
-    //   // });
+  PolylinePoints userPolylinePoints;
+  List<LatLng> userPolylineCoordinates = [];
+  Map<PolylineId, Polyline> userPolylineId = Map();
 
-    //   for (var item in result.points) {
-    //     polylineCoordinates.add(LatLng(item.latitude, item.longitude));
-    //   }
-    // } else {
-    //   print(
-    //       '################## result is Empty ========>>>> ${result.points.toString()} ###############');
-    //   polylineCoordinates.add(LatLng(13.797241, 100.521201));
-    //   polylineCoordinates.add(LatLng(13.794305, 100.518561));
-    //   polylineCoordinates.add(LatLng(13.795873, 100.515846));
-    //   polylineCoordinates.add(LatLng(13.793313, 100.517796));
-    // }
+  Future<Null> createUserPolylines(Position start, Position destination) async {
+    userPolylinePoints = PolylinePoints();
+    PolylineResult result = await userPolylinePoints.getRouteBetweenCoordinates(
+      'AIzaSyDiKaAMHaZruKDVBkfacl5H2lX3SdKGCLA',
+      PointLatLng(start.latitude, start.longitude),
+      PointLatLng(destination.latitude, destination.longitude),
+      travelMode: TravelMode.driving,
+    );
 
-    // PolylineId id = PolylineId('poly');
+    if (result.points.isNotEmpty) {
+      for (var item in result.points) {
+       
+      }
+    }
 
-    // Polyline polyline = Polyline(
-    //   polylineId: id,
-    //   color: Colors.purple,
-    //   points: polylineCoordinates,
-    //   width: 3,
-    // );
 
-    // polylines[id] = polyline;
+
   }
 
   GoogleMap buildGoogleMap() {
@@ -370,7 +351,9 @@ class _HomeState extends State<Home> {
         Marker(
           markerId: MarkerId('idSenate'),
           position: LatLng(latSenate, lngSenate),
-          infoWindow: InfoWindow(title: 'สัปปายะสภาสถาน',),
+          infoWindow: InfoWindow(
+            title: 'สัปปายะสภาสถาน',
+          ),
         ),
       ].toSet(),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:ungsenatemap/screens/history.dart';
 import 'package:ungsenatemap/screens/symbol.dart';
+import 'package:ungsenatemap/utility/normal_dialog.dart';
 
 class MainHold extends StatefulWidget {
   @override
@@ -86,11 +88,36 @@ class _MainHoldState extends State<MainHold> {
     );
   }
 
+  Future<Null> checkPermission() async {
+    LocationPermission permission;
+    permission = await Geolocator.checkPermission();
+    print('permissoin ====>>>> $permission');
+    if ((permission == LocationPermission.always) ||
+        (permission == LocationPermission.whileInUse)) {
+      normalDialog(context, 'You Share alreadly Location');
+    } else {
+      print('Work');
+      // await Geolocator.openLocationSettings();
+      permission = await Geolocator.requestPermission();
+      // .catchError((onError) => print('onError ==>> ${onError.toString()}'));
+      if ((permission == LocationPermission.always) ||
+          (permission == LocationPermission.whileInUse)) {
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      }
+      // else {
+      //   normalDialog(context, 'You Not Share Location');
+      // }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('แนะนำ รัฐสภา'),
+        actions: [
+          // buildChangePermission(),
+        ],
       ),
       body: GridView.extent(
         crossAxisSpacing: 16,
@@ -98,6 +125,13 @@ class _MainHoldState extends State<MainHold> {
         maxCrossAxisExtent: 300,
         children: widgets,
       ),
+    );
+  }
+
+  IconButton buildChangePermission() {
+    return IconButton(
+      icon: Icon(Icons.location_on),
+      onPressed: () => checkPermission(),
     );
   }
 }
