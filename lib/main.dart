@@ -6,7 +6,6 @@ import 'package:location/location.dart';
 
 import 'package:ungsenatemap/router.dart';
 
-
 var initRoute;
 bool status = true;
 
@@ -15,6 +14,11 @@ Future<Null> main() async {
 
   findPosition();
 }
+
+// main() {
+//   initRoute = '/home';
+//   runApp(MyApp());
+// }
 
 Future<Null> findPosition() async {
   bool locationServiceEnable;
@@ -27,7 +31,10 @@ Future<Null> findPosition() async {
     runApp(MyApp());
   } else {
     permission = await Geolocator.checkPermission();
-    print('########## permission ==>> $permission');
+    print('##################################################');
+    print('########## permission ==>> $permission ###########');
+    print('##################################################');
+
     if (permission == LocationPermission.deniedForever) {
       initRoute = '/mainHold';
       runApp(MyApp());
@@ -35,17 +42,28 @@ Future<Null> findPosition() async {
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      print('##################################################');
       print('########## permission from denied ==>> $permission');
+      print('##################################################');
 
       if ((permission != LocationPermission.always) &&
           (permission != LocationPermission.whileInUse)) {
+        print('In condition');
         initRoute = '/mainHold';
         runApp(MyApp());
       } else {
+        print('Out condition');
         initRoute = '/home';
         runApp(MyApp());
       }
+    } 
+
+    if (permission == LocationPermission.whileInUse) {
+      initRoute = '/home';
+        runApp(MyApp());
     }
+
+
   }
 }
 
@@ -63,8 +81,6 @@ Future<LocationData> findLocation() async {
     return null;
   }
 }
-
-
 
 class MyApp extends StatelessWidget {
   @override

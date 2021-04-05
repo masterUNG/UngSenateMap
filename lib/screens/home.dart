@@ -22,41 +22,71 @@ class _HomeState extends State<Home> {
   Set<Polygon> currentPolygon = Set();
   double latSenate = 13.794939, lngSenate = 100.516888;
 
+  String apiKey = 'AIzaSyCJbsjRtoJV7pS1WYQxythULusqA5eOTqg';
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // checkPermission();
-    _createPolylines();
+    // _createPolylines();
     choosePlatform();
     // findLatLng();
     currentPolygon = senatePolygon();
     // checkPermissLocation();
   }
 
-  void choosePlatform() {
-    if (Platform.isIOS) {
-      print('############ Welcome iOS ############');
-      findLatLng();
-    } else if (Platform.isAndroid) {
-      location.onLocationChanged.listen((event) {
-        if (lat == null) {
-          latUser = event.latitude;
-          lngUser = event.longitude;
-          print('lat,lngUser #1 ==> $latUser, $lngUser');
-          setState(() {
-            lat = latUser;
-            lng = lngUser;
-          });
-        } else {
-          setState(() {
-            latUser = event.latitude;
-            lngUser = event.longitude;
-            print('lat,lngUser #2 ==> $latUser, $lngUser');
-          });
-        }
+  Future<Null> getPolyline() async {
+    print('######### getPolyline Work ##########');
+    PolylineResult polylineResult = await polylinePoints
+        .getRouteBetweenCoordinates(apiKey, PointLatLng(latUser, lngUser),
+            PointLatLng(latSenate, lngSenate),
+            travelMode: TravelMode.driving,
+            wayPoints: [PolylineWayPoint(location: 'รัฐสภา เกียกกาย')]);
+
+    print('##### polylineResult ==>> ${polylineResult.points}');
+
+    if (polylineResult.points.isNotEmpty) {
+      polylineResult.points.forEach((PointLatLng pointLatLng) {
+        polylineCoordinates
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
       });
+    }
+    addPolyline();
+  }
+
+  void addPolyline() {
+    PolylineId id = PolylineId('poly');
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.red,
+      points: polylineCoordinates,
+      width: 5,
+    );
+    polylines[id] = polyline;
+    setState(() {});
+  }
+
+  Future<Null> choosePlatform() async {
+    Position position = await findPosition();
+    setState(() {
+      latUser = position.latitude;
+      lngUser = position.longitude;
+      getPolyline();
+    });
+
+  }
+
+  Future<Position> findPosition() async {
+    var position;
+    try {
+      position = await Geolocator.getCurrentPosition();
+      return position;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -65,7 +95,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       drawer: buildDrawer(),
       appBar: AppBar(),
-      body: lat == null
+      body: latUser == null
           ? Center(
               child: CircularProgressIndicator(),
             )
@@ -321,13 +351,8 @@ class _HomeState extends State<Home> {
     );
 
     if (result.points.isNotEmpty) {
-      for (var item in result.points) {
-       
-      }
+      for (var item in result.points) {}
     }
-
-
-
   }
 
   GoogleMap buildGoogleMap() {
@@ -341,7 +366,10 @@ class _HomeState extends State<Home> {
       initialCameraPosition: position,
       onMapCreated: (controller) {},
       polygons: currentPolygon,
-      // polylines: Set<Polyline>.of(polylines.values),
+      polylines: Set<Polyline>.of(polylines.values),
+      zoomGesturesEnabled: true,
+      zoomControlsEnabled: true,
+      myLocationEnabled: true,
       markers: <Marker>[
         Marker(
           markerId: MarkerId('idUser'),
@@ -363,14 +391,14 @@ class _HomeState extends State<Home> {
     print('######## findLatLng Work ########');
     LocationData data = await findLocationData();
     if (data != null) {
-      print('######## Location Not null ########');
+      print('########11111111 Location Not null 1111111########');
       setState(() {
         lat = data.latitude;
         lng = data.longitude;
         latUser = lat;
         lngUser = lng;
-        print('lat = $lat, lng = $lng');
-        // startLatLng = LatLng(lat, lng);
+        print('###### lat = $lat, lng = $lng #####');
+        getPolyline();
       });
     }
   }
