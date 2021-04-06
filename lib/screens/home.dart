@@ -77,7 +77,6 @@ class _HomeState extends State<Home> {
       lngUser = position.longitude;
       getPolyline();
     });
-
   }
 
   Future<Position> findPosition() async {
@@ -112,6 +111,7 @@ class _HomeState extends State<Home> {
             buildListTileBuildB(),
             buildListTileBuildC(),
             buildListTileMainHold(),
+            // buildPanorama(),
           ],
         ),
       );
@@ -128,9 +128,23 @@ class _HomeState extends State<Home> {
         subtitle: Text('ประวัติความเป็นมา, ตราสัญลักษณ์, อาคารในรัฐสภา'),
         title: Text('แนะนำ รัฐสภา'),
         leading: Icon(
-          Icons.list,
+          Icons.looks_4,
           size: 36,
           color: Colors.purple,
+        ),
+      );
+
+  ListTile buildPanorama() => ListTile(
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.pushNamed(context, '/mainRoom');
+        },
+        subtitle: Text('ห้องดู บรรยากาศ 360 องศา'),
+        title: Text('Panorama'),
+        leading: Icon(
+          Icons.looks_5,
+          size: 36,
+          color: Colors.brown,
         ),
       );
 

@@ -35,10 +35,7 @@ Future<Null> findPosition() async {
     print('########## permission ==>> $permission ###########');
     print('##################################################');
 
-    if (permission == LocationPermission.deniedForever) {
-      initRoute = '/mainHold';
-      runApp(MyApp());
-    }
+    
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -56,15 +53,26 @@ Future<Null> findPosition() async {
         initRoute = '/home';
         runApp(MyApp());
       }
-    } 
+    }
 
     if (permission == LocationPermission.whileInUse) {
       initRoute = '/home';
-        runApp(MyApp());
+      runApp(MyApp());
+    }
+
+     if (permission == LocationPermission.always) {
+      initRoute = '/home';
+      runApp(MyApp());
+    }
+
+     if (permission == LocationPermission.deniedForever) {
+      initRoute = '/mainHold';
+      runApp(MyApp());
     }
 
 
-  }
+
+  } // if
 }
 
 Future<Null> findLatLng() async {
