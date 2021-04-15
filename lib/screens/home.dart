@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -23,6 +22,7 @@ class _HomeState extends State<Home> {
   double latSenate = 13.794939, lngSenate = 100.516888;
 
   String apiKey = 'AIzaSyCJbsjRtoJV7pS1WYQxythULusqA5eOTqg';
+  // String apiKey = 'AIzaSyBJqETa-1GWPo2TpQoFVf4SlOHUTJ_hc6A';
   Map<PolylineId, Polyline> polylines = {};
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints = PolylinePoints();
@@ -30,13 +30,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-
-    // checkPermission();
-    // _createPolylines();
     choosePlatform();
-    // findLatLng();
     currentPolygon = senatePolygon();
-    // checkPermissLocation();
   }
 
   Future<Null> getPolyline() async {
@@ -47,7 +42,9 @@ class _HomeState extends State<Home> {
             travelMode: TravelMode.driving,
             wayPoints: [PolylineWayPoint(location: 'รัฐสภา เกียกกาย')]);
 
+    print('###################################################');
     print('##### polylineResult ==>> ${polylineResult.points}');
+    print('###################################################');
 
     if (polylineResult.points.isNotEmpty) {
       polylineResult.points.forEach((PointLatLng pointLatLng) {
