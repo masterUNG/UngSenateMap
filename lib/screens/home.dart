@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
 import 'package:ungsenatemap/screens/main_hold.dart';
 
 class Home extends StatefulWidget {
+  final double latUser, lngUser;
+  Home({this.latUser, this.lngUser});
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   double lat, lng;
   double latUser, lngUser;
-  Location location = Location();
+
   LatLng startLatLng;
   Set<Polygon> currentPolygon = Set();
   double latSenate = 13.794939, lngSenate = 100.516888;
@@ -28,23 +29,65 @@ class _HomeState extends State<Home> {
   PolylinePoints polylinePoints = PolylinePoints();
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // TODO: implement didChangeAppLifecycleState
+    super.didChangeAppLifecycleState(state);
+
+    switch (state) {
+      case AppLifecycleState.inactive:
+        print('###### State inactive ######');
+        break;
+      case AppLifecycleState.paused:
+        print('###### State paused ######');
+        break;
+      case AppLifecycleState.resumed:
+        print('###### State resumed ######');
+        choosePlatform();
+        break;
+      default:
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
-    choosePlatform();
+
+    latUser = widget.latUser;
+    lngUser = widget.lngUser;
+
+    print('###### latUser = $latUser, lng = $lngUser');
+
+    WidgetsBinding.instance.addObserver(this);
+
+    if (latUser != null) {
+      choosePlatform();
+    } else {
+      getPolyline();
+    }
+
     currentPolygon = senatePolygon();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
   Future<Null> getPolyline() async {
-    print('######### getPolyline Work ##########');
+    if (polylineCoordinates.length != 0) {
+      polylineCoordinates.clear();
+    }
+
     PolylineResult polylineResult = await polylinePoints
         .getRouteBetweenCoordinates(apiKey, PointLatLng(latUser, lngUser),
             PointLatLng(latSenate, lngSenate),
             travelMode: TravelMode.driving,
             wayPoints: [PolylineWayPoint(location: 'รัฐสภา เกียกกาย')]);
 
-    print('###################################################');
-    print('##### polylineResult ==>> ${polylineResult.points}');
-    print('###################################################');
+    // print('###################################################');
+    // print('##### polylineResult ==>> ${polylineResult.points}');
+    // print('###################################################');
 
     if (polylineResult.points.isNotEmpty) {
       polylineResult.points.forEach((PointLatLng pointLatLng) {
@@ -90,7 +133,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: buildDrawer(),
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => choosePlatform(),
+          )
+        ],
+      ),
       body: latUser == null
           ? Center(
               child: CircularProgressIndicator(),
@@ -386,6 +436,7 @@ class _HomeState extends State<Home> {
           markerId: MarkerId('idUser'),
           position: LatLng(latUser, lngUser),
           infoWindow: InfoWindow(title: 'คุณอยู่ที่นี่'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(60),
         ),
         Marker(
           markerId: MarkerId('idSenate'),
@@ -398,28 +449,28 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<Null> findLatLng() async {
-    print('######## findLatLng Work ########');
-    LocationData data = await findLocationData();
-    if (data != null) {
-      print('########11111111 Location Not null 1111111########');
-      setState(() {
-        lat = data.latitude;
-        lng = data.longitude;
-        latUser = lat;
-        lngUser = lng;
-        print('###### lat = $lat, lng = $lng #####');
-        getPolyline();
-      });
-    }
-  }
+  // Future<Null> findLatLng() async {
+  //   print('######## findLatLng Work ########');
+  //   LocationData data = await findLocationData();
+  //   if (data != null) {
+  //     print('########11111111 Location Not null 1111111########');
+  //     setState(() {
+  //       lat = data.latitude;
+  //       lng = data.longitude;
+  //       latUser = lat;
+  //       lngUser = lng;
+  //       print('###### lat = $lat, lng = $lng #####');
+  //       getPolyline();
+  //     });
+  //   }
+  // }
 
-  Future<LocationData> findLocationData() async {
-    Location location = Location();
-    try {
-      return location.getLocation();
-    } catch (e) {
-      return null;
-    }
-  }
+  // Future<LocationData> findLocationData() async {
+  //   Location location = Location();
+  //   try {
+  //     return location.getLocation();
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 }
